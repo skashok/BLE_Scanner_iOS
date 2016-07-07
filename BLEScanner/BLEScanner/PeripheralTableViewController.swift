@@ -9,15 +9,14 @@
 import CoreBluetooth
 import UIKit
 
-class PeripheralTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, CBCentralManagerDelegate
-{
+class PeripheralTableViewController: UIViewController, CBCentralManagerDelegate{
+	
     var centralManager: CBCentralManager?
     var peripherals: Array<CBPeripheral> = Array<CBPeripheral>()
 	
 	@IBOutlet weak var tableView: UITableView!
 	
-	override func viewDidLoad()
-    {
+	override func viewDidLoad(){
         super.viewDidLoad()
 		
 		//Initialise CoreBluetooth Central Manager
@@ -26,40 +25,37 @@ class PeripheralTableViewController: UIViewController, UITableViewDelegate, UITa
 	
 
 	//CoreBluetooth methods
-    func centralManagerDidUpdateState(central: CBCentralManager)
-    {
-        if (central.state == CBCentralManagerState.PoweredOn)
-        {
+    func centralManagerDidUpdateState(central: CBCentralManager){
+        if (central.state == CBCentralManagerState.PoweredOn){
             self.centralManager?.scanForPeripheralsWithServices(nil, options: nil)
-        }
-        else
-        {
+        }else{
             // do something like alert the user that ble is not on
         }
     }
 
-    func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber)
-    {
+    func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber){
+		
         peripherals.append(peripheral)
 		tableView.reloadData()
     }
-	
+}
 
-	//UITableView methods
-	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
-    {
-        let cell:UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("cell")! as UITableViewCell
+extension PeripheralTableViewController: UITableViewDataSource{
+	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell{
+		
+		let cell:UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("cell")! as UITableViewCell
 		
 		let peripheral = peripherals[indexPath.row]
 		let serviceString = peripheral.name == "" ? "No device name" : peripheral.name
 		
 		cell.textLabel?.text = serviceString
 		
-        return cell
-    }
-
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
-    {
-        return peripherals.count
-    }
+		return cell
+	}
+	
+	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int{
+		return peripherals.count
+	}
 }
+
+
