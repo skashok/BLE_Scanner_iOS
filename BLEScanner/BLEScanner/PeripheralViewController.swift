@@ -71,6 +71,11 @@ extension PeripheralViewController: CBCentralManagerDelegate{
 	
 	func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber){
 		
+		if peripheral.state != .Connected {
+			//peripheral.delegate = self
+			//centralManager?.connectPeripheral(peripheral, options: nil)
+		}
+		
 		let displayPeripheral = DisplayPeripheral(peripheral: peripheral, lastRSSI: RSSI)
 		peripherals.append(displayPeripheral)
 		
@@ -81,7 +86,37 @@ extension PeripheralViewController: CBCentralManagerDelegate{
 	}
 }
 
-extension PeripheralViewController: UITableViewDataSource{
+extension PeripheralViewController: CBPeripheralDelegate {
+	func centralManager(central: CBCentralManager, didFailToConnectPeripheral peripheral: CBPeripheral, error: NSError?) {
+		print("Error connecting peripheral: \(error?.localizedDescription)")
+	}
+	
+	func centralManager(central: CBCentralManager, didConnectPeripheral peripheral: CBPeripheral) {
+		print("Peripheral connected")
+		peripheral.discoverServices(nil)
+	}
+	
+	func peripheral(peripheral: CBPeripheral, didDiscoverServices error: NSError?) {
+		if error != nil {
+			print("Error discovering services: \(error?.localizedDescription)")
+		}
+		
+		peripheral.services?.forEach({ (service) in
+			print(service)
+			peripheral.discoverCharacteristics(nil, forService: service)
+		})
+	}
+	
+	func peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService service: CBService, error: NSError?) {
+		if error != nil {
+			print("Error discovering service characteristics: \(error?.localizedDescription)")
+		}
+		
+		//print(service.characteristics)
+	}
+}
+
+extension PeripheralViewController: UITableViewDataSource {
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell{
 		
 		let cell = self.tableView.dequeueReusableCellWithIdentifier("cell")! as! DeviceTableViewCell

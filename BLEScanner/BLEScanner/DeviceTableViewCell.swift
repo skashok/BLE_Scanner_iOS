@@ -24,9 +24,16 @@ class DeviceTableViewCell: UITableViewCell {
 			if let rssi = displayPeripheral!.lastRSSI {
 				deviceRssiLabel.text = "\(rssi)dB"
 			}
-
+			
+			if let services = displayPeripheral!.peripheral!.services {
+				for service in services {
+					if let characteristics = service.characteristics {
+						for characteristic in characteristics {
+							print(characteristic.descriptors)
+						}
+					}
+				}
+			}
 		}
 	}
-	
-	
 }

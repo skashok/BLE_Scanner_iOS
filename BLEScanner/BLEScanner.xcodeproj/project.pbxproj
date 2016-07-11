@@ -62,11 +62,11 @@
 			children = (
 				4AA1DB6D1C5142BB0053CD71 /* AppDelegate.swift */,
 				4AA1DB7F1C5143690053CD71 /* PeripheralViewController.swift */,
+				4A9A21601D3214D800C6443F /* DeviceTableViewCell.swift */,
 				4AA1DB711C5142BB0053CD71 /* Main.storyboard */,
 				4AA1DB741C5142BC0053CD71 /* Assets.xcassets */,
 				4AA1DB761C5142BC0053CD71 /* LaunchScreen.storyboard */,
 				4AA1DB791C5142BC0053CD71 /* Info.plist */,
-				4A9A21601D3214D800C6443F /* DeviceTableViewCell.swift */,
 			);
 			path = BLEScanner;
 			sourceTree = "<group>";
