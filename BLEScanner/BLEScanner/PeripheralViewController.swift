@@ -21,55 +21,84 @@ struct DisplayPeripheral{
 
 class PeripheralViewController: UIViewController {
 	
+	@IBOutlet weak var statusLabel: UILabel!
 	@IBOutlet weak var bluetoothIcon: UIImageView!
-	@IBOutlet weak var scanninglabel: UILabel!
+	@IBOutlet weak var scanningButton: UIButton!
 	
     var centralManager: CBCentralManager?
     var peripherals: [DisplayPeripheral] = []
 	
 	@IBOutlet weak var tableView: UITableView!
 	
+	
 	override func viewDidLoad(){
         super.viewDidLoad()
 		
-		tableView.hidden = true
 		//Initialise CoreBluetooth Central Manager
         centralManager = CBCentralManager(delegate: self, queue: dispatch_get_main_queue())
     }
 	
-	func pulseBluetoothIcon(){
-		let scaleAnimation:CABasicAnimation = CABasicAnimation(keyPath: "transform.scale")
+	func updateViewForScanning(){
+		statusLabel.text = "Scanning BLE Devices..."
+		bluetoothIcon.pulseAnimation()
+		bluetoothIcon.hidden = false
+		scanningButton.setTitle("Stop Scanning", forState: .Normal)
+		scanningButton.setTitleColor(UIColor.bluetoothBlueColor(), forState: .Normal)
+		scanningButton.layer.borderColor = UIColor.bluetoothBlueColor().CGColor
+		scanningButton.layer.borderWidth = 1.5
+		scanningButton.backgroundColor = UIColor.clearColor()
 		
-		scaleAnimation.duration = 0.5
-		scaleAnimation.repeatCount = Float.infinity
-		scaleAnimation.autoreverses = true
-		scaleAnimation.fromValue = 1.1;
-		scaleAnimation.toValue = 0.9;
-		
-		bluetoothIcon.layer.addAnimation(scaleAnimation, forKey: "scale")
-		
-		let opacityAnimation = CABasicAnimation(keyPath: "opacity")
-		opacityAnimation.duration = 0.5
-		opacityAnimation.repeatCount = Float.infinity
-		opacityAnimation.autoreverses = true
-		opacityAnimation.fromValue = 1.0
-		opacityAnimation.toValue = 0.2
-		
-		bluetoothIcon.layer.addAnimation(opacityAnimation, forKey: "opacity")
+	}
+	
+	func updateViewForStopScanning(){
+		let plural = peripherals.count > 1 ? "s" : ""
+		statusLabel.text = "\(peripherals.count) Device\(plural) Found"
+		bluetoothIcon.layer.removeAllAnimations()
+		bluetoothIcon.hidden = true
+		scanningButton.setTitle("Start Scanning", forState: .Normal)
+		scanningButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+		scanningButton.layer.borderColor = UIColor.bluetoothBlueColor().CGColor
+		scanningButton.backgroundColor = UIColor.bluetoothBlueColor()
+	}
+	
+	@IBAction func scanningButtonPressed(sender: AnyObject){
+		if centralManager!.isScanning{
+			centralManager?.stopScan()
+			updateViewForStopScanning()
+		}else{
+			startScanning()
+		}
+	}
+	
+	func startScanning(){
+		peripherals = []
+		self.centralManager?.scanForPeripheralsWithServices(nil, options: nil)
+		updateViewForScanning()
+		let triggerTime = (Int64(NSEC_PER_SEC) * 10)
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, triggerTime), dispatch_get_main_queue(), { () -> Void in
+			if self.centralManager!.isScanning{
+				self.centralManager?.stopScan()
+				self.updateViewForStopScanning()
+			}
+		})
 	}
 }
 
 extension PeripheralViewController: CBCentralManagerDelegate{
 	func centralManagerDidUpdateState(central: CBCentralManager){
 		if (central.state == CBCentralManagerState.PoweredOn){
-			self.centralManager?.scanForPeripheralsWithServices(nil, options: nil)
-			pulseBluetoothIcon()
+			startScanning()
 		}else{
 			// do something like alert the user that ble is not on
 		}
 	}
 	
 	func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber){
+		
+		for (key, value) in advertisementData {
+			print("\(peripheral.name): \(key) -> \(value)")
+		}
+		
 		
 		if peripheral.state != .Connected {
 			//peripheral.delegate = self
@@ -80,7 +109,6 @@ extension PeripheralViewController: CBCentralManagerDelegate{
 		peripherals.append(displayPeripheral)
 		
 		if peripherals.count > 0{
-			tableView.hidden = false
 			tableView.reloadData()
 		}
 	}
@@ -129,7 +157,5 @@ extension PeripheralViewController: UITableViewDataSource {
 		return peripherals.count
 	}
 }
-
-
 
 
