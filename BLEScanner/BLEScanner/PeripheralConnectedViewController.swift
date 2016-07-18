@@ -89,6 +89,18 @@ extension PeripheralConnectedViewController: CBPeripheralDelegate {
 	}
 	
 	func peripheral(peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: NSError?) {
+		
+		switch RSSI.integerValue {
+		case -90 ... -60:
+			rssiLabel.textColor = UIColor.bluetoothOrangeColor()
+			break
+		case -200 ... -90:
+			rssiLabel.textColor = UIColor.bluetoothRedColor()
+			break
+		default:
+			rssiLabel.textColor = UIColor.bluetoothGreenColor()
+		}
+		
 		rssiLabel.text = "\(RSSI)dB"
 	}
 }
