@@ -23,33 +23,38 @@ class PeripheralViewController: UIViewController {
 	
 	@IBOutlet weak var statusLabel: UILabel!
 	@IBOutlet weak var bluetoothIcon: UIImageView!
-	@IBOutlet weak var scanningButton: UIButton!
+	@IBOutlet weak var scanningButton: ScanButton!
 	
     var centralManager: CBCentralManager?
     var peripherals: [DisplayPeripheral] = []
+	var viewReloadTimer: NSTimer?
 	
 	@IBOutlet weak var tableView: UITableView!
 	
-	
-	override func viewDidLoad(){
-        super.viewDidLoad()
+	required init?(coder aDecoder: NSCoder) {
+		super.init(coder: aDecoder)
 		
 		//Initialise CoreBluetooth Central Manager
-        centralManager = CBCentralManager(delegate: self, queue: dispatch_get_main_queue())
+		centralManager = CBCentralManager(delegate: self, queue: dispatch_get_main_queue())
+	}
+	
+	override func viewWillAppear(animated: Bool) {
+		super.viewWillAppear(animated)
 		
-		var viewReloadTimer = NSTimer.scheduledTimerWithTimeInterval(2.0, target: self, selector: Selector("refreshScanView"), userInfo: nil, repeats: true)
-    }
+		viewReloadTimer = NSTimer.scheduledTimerWithTimeInterval(2.0, target: self, selector: #selector(PeripheralViewController.refreshScanView), userInfo: nil, repeats: true)
+	}
+	
+	override func viewWillDisappear(animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		viewReloadTimer?.invalidate()
+	}
 	
 	func updateViewForScanning(){
 		statusLabel.text = "Scanning BLE Devices..."
 		bluetoothIcon.pulseAnimation()
 		bluetoothIcon.hidden = false
-		scanningButton.setTitle("Stop Scanning", forState: .Normal)
-		scanningButton.setTitleColor(UIColor.bluetoothBlueColor(), forState: .Normal)
-		scanningButton.layer.borderColor = UIColor.bluetoothBlueColor().CGColor
-		scanningButton.layer.borderWidth = 1.5
-		scanningButton.backgroundColor = UIColor.clearColor()
-		
+		scanningButton.buttonColorScheme(true)
 	}
 	
 	func updateViewForStopScanning(){
@@ -57,10 +62,7 @@ class PeripheralViewController: UIViewController {
 		statusLabel.text = "\(peripherals.count) Device\(plural) Found"
 		bluetoothIcon.layer.removeAllAnimations()
 		bluetoothIcon.hidden = true
-		scanningButton.setTitle("Start Scanning", forState: .Normal)
-		scanningButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-		scanningButton.layer.borderColor = UIColor.bluetoothBlueColor().CGColor
-		scanningButton.backgroundColor = UIColor.bluetoothBlueColor()
+		scanningButton.buttonColorScheme(false)
 	}
 	
 	@IBAction func scanningButtonPressed(sender: AnyObject){
