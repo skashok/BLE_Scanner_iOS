@@ -12,10 +12,12 @@ import CoreBluetooth
 class PeripheralConnectedViewController: UIViewController {
 
 	@IBOutlet weak var tableView: UITableView!
-	var peripheral: CBPeripheral?
 	@IBOutlet weak var peripheralName: UILabel!
 	@IBOutlet weak var blurView: UIVisualEffectView!
+	@IBOutlet weak var rssiLabel: UILabel!
 	
+	var peripheral: CBPeripheral?
+	var rssiReloadTimer: NSTimer?
 	var services: [CBService] = []
 	
     override func viewDidLoad() {
@@ -29,7 +31,13 @@ class PeripheralConnectedViewController: UIViewController {
 		
 		tableView.rowHeight = UITableViewAutomaticDimension
 		tableView.estimatedRowHeight = 80.0
-		tableView.contentInset.top = 10
+		tableView.contentInset.top = 5
+		
+		rssiReloadTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(PeripheralConnectedViewController.refreshRSSI), userInfo: nil, repeats: true)
+	}
+	
+	func refreshRSSI(){
+		peripheral?.readRSSI()
 	}
 
 	@IBAction func disconnectButtonPressed(sender: AnyObject) {
@@ -66,7 +74,6 @@ extension PeripheralConnectedViewController: CBPeripheralDelegate {
 		}
 		
 		peripheral.services?.forEach({ (service) in
-			print(service)
 			services.append(service)
 			tableView.reloadData()
 			//peripheral.discoverCharacteristics(nil, forService: service)
@@ -79,5 +86,9 @@ extension PeripheralConnectedViewController: CBPeripheralDelegate {
 		}
 		
 		//print(service.characteristics)
+	}
+	
+	func peripheral(peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: NSError?) {
+		rssiLabel.text = "\(RSSI)dB"
 	}
 }

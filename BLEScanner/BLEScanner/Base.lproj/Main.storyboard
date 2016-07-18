@@ -223,13 +223,7 @@
                                             <action selector="disconnectButtonPressed:" destination="5vs-gu-GRw" eventType="touchUpInside" id="Eda-p7-PA3"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Services" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FeM-O1-Kkq">
-                                        <rect key="frame" x="8" y="86" width="70" height="22"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                        <color key="textColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="80" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="kAa-cI-JUH">
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="80" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="kAa-cI-JUH">
                                         <rect key="frame" x="0.0" y="116" width="375" height="507"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                         <inset key="scrollIndicatorInsets" minX="0.0" minY="5" maxX="0.0" maxY="0.0"/>
@@ -324,6 +318,18 @@
                                             <outlet property="delegate" destination="5vs-gu-GRw" id="Ntd-xY-jxd"/>
                                         </connections>
                                     </tableView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Services" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FeM-O1-Kkq">
+                                        <rect key="frame" x="8" y="86" width="77" height="23"/>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="19"/>
+                                        <color key="textColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="RSSI" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SL3-tX-qBv">
+                                        <rect key="frame" x="290" y="86" width="77" height="23"/>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="19"/>
+                                        <color key="textColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -337,7 +343,9 @@
                                     <constraint firstAttribute="trailing" secondItem="kAa-cI-JUH" secondAttribute="trailing" id="cfz-b8-0cv"/>
                                     <constraint firstItem="kAa-cI-JUH" firstAttribute="top" secondItem="FeM-O1-Kkq" secondAttribute="bottom" constant="8" id="gYN-BI-Xlt"/>
                                     <constraint firstItem="FeM-O1-Kkq" firstAttribute="leading" secondItem="aTz-Pw-js4" secondAttribute="leading" constant="8" id="hi7-7f-why"/>
+                                    <constraint firstItem="SL3-tX-qBv" firstAttribute="top" secondItem="aTz-Pw-js4" secondAttribute="top" constant="86" id="nnj-zZ-Cyo"/>
                                     <constraint firstItem="FeM-O1-Kkq" firstAttribute="top" secondItem="aTz-Pw-js4" secondAttribute="top" constant="86" id="p8u-Zg-ioK"/>
+                                    <constraint firstAttribute="trailing" secondItem="SL3-tX-qBv" secondAttribute="trailing" constant="8" id="vkx-X0-poc"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -357,6 +365,7 @@
                     <connections>
                         <outlet property="blurView" destination="5zs-4M-hSJ" id="0lH-6g-bh7"/>
                         <outlet property="peripheralName" destination="Qho-76-Vzw" id="Ddj-HO-xQf"/>
+                        <outlet property="rssiLabel" destination="SL3-tX-qBv" id="pFH-Bq-e55"/>
                         <outlet property="tableView" destination="kAa-cI-JUH" id="ph6-vn-XKp"/>
                     </connections>
                 </viewController>
