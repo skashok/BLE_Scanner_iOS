@@ -25,6 +25,8 @@ class PeripheralViewController: UIViewController {
     var peripherals: [DisplayPeripheral] = []
 	var viewReloadTimer: NSTimer?
 	
+	var selectedPeripheral: CBPeripheral?
+	
 	@IBOutlet weak var tableView: UITableView!
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -89,6 +91,12 @@ class PeripheralViewController: UIViewController {
 			tableView.reloadData()
 		}
 	}
+	
+	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+		if let destinationViewController = segue.destinationViewController as? PeripheralConnectedViewController{
+			destinationViewController.peripheral = selectedPeripheral
+		}
+	}
 }
 
 extension PeripheralViewController: CBCentralManagerDelegate{
@@ -123,26 +131,8 @@ extension PeripheralViewController: CBPeripheralDelegate {
 	
 	func centralManager(central: CBCentralManager, didConnectPeripheral peripheral: CBPeripheral) {
 		print("Peripheral connected")
+		performSegueWithIdentifier("PeripheralConnectedSegue", sender: self)
 		peripheral.discoverServices(nil)
-	}
-	
-	func peripheral(peripheral: CBPeripheral, didDiscoverServices error: NSError?) {
-		if error != nil {
-			print("Error discovering services: \(error?.localizedDescription)")
-		}
-		
-		peripheral.services?.forEach({ (service) in
-			print(service)
-			peripheral.discoverCharacteristics(nil, forService: service)
-		})
-	}
-	
-	func peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService service: CBService, error: NSError?) {
-		if error != nil {
-			print("Error discovering service characteristics: \(error?.localizedDescription)")
-		}
-		
-		//print(service.characteristics)
 	}
 }
 
@@ -163,6 +153,7 @@ extension PeripheralViewController: UITableViewDataSource {
 extension PeripheralViewController: DeviceCellDelegate{
 	func connectPressed(peripheral: CBPeripheral) {
 		if peripheral.state != .Connected {
+			selectedPeripheral = peripheral
 			peripheral.delegate = self
 			centralManager?.connectPeripheral(peripheral, options: nil)
 		}

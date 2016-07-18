@@ -11,6 +11,8 @@
 		4A9B031D1D3524F300FA3D0F /* PulseAnimationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9B031C1D3524F300FA3D0F /* PulseAnimationExtension.swift */; };
 		4A9B031F1D35B1D900FA3D0F /* BluetoothColorsExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9B031E1D35B1D900FA3D0F /* BluetoothColorsExtension.swift */; };
 		4A9B03411D3C746F00FA3D0F /* ScanButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9B03401D3C746F00FA3D0F /* ScanButton.swift */; };
+		4A9B03471D3CA8DC00FA3D0F /* PeripheralConnectedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9B03461D3CA8DC00FA3D0F /* PeripheralConnectedViewController.swift */; };
+		4A9B03491D3CF16A00FA3D0F /* ServiceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9B03481D3CF16A00FA3D0F /* ServiceTableViewCell.swift */; };
 		4AA1DB6E1C5142BB0053CD71 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA1DB6D1C5142BB0053CD71 /* AppDelegate.swift */; };
 		4AA1DB731C5142BB0053CD71 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4AA1DB711C5142BB0053CD71 /* Main.storyboard */; };
 		4AA1DB751C5142BC0053CD71 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4AA1DB741C5142BC0053CD71 /* Assets.xcassets */; };
@@ -24,6 +26,8 @@
 		4A9B031C1D3524F300FA3D0F /* PulseAnimationExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PulseAnimationExtension.swift; sourceTree = "<group>"; };
 		4A9B031E1D35B1D900FA3D0F /* BluetoothColorsExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothColorsExtension.swift; sourceTree = "<group>"; };
 		4A9B03401D3C746F00FA3D0F /* ScanButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanButton.swift; sourceTree = "<group>"; };
+		4A9B03461D3CA8DC00FA3D0F /* PeripheralConnectedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralConnectedViewController.swift; sourceTree = "<group>"; };
+		4A9B03481D3CF16A00FA3D0F /* ServiceTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceTableViewCell.swift; sourceTree = "<group>"; };
 		4AA1DB6A1C5142BB0053CD71 /* BLEScanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BLEScanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4AA1DB6D1C5142BB0053CD71 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4AA1DB721C5142BB0053CD71 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -76,6 +80,8 @@
 				4AA1DB791C5142BC0053CD71 /* Info.plist */,
 				4A9B031C1D3524F300FA3D0F /* PulseAnimationExtension.swift */,
 				4A9B03401D3C746F00FA3D0F /* ScanButton.swift */,
+				4A9B03461D3CA8DC00FA3D0F /* PeripheralConnectedViewController.swift */,
+				4A9B03481D3CF16A00FA3D0F /* ServiceTableViewCell.swift */,
 			);
 			path = BLEScanner;
 			sourceTree = "<group>";
@@ -152,9 +158,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				4AA1DB801C5143690053CD71 /* PeripheralViewController.swift in Sources */,
+				4A9B03491D3CF16A00FA3D0F /* ServiceTableViewCell.swift in Sources */,
 				4A9B031F1D35B1D900FA3D0F /* BluetoothColorsExtension.swift in Sources */,
 				4A9A21611D3214D800C6443F /* DeviceTableViewCell.swift in Sources */,
 				4A9B031D1D3524F300FA3D0F /* PulseAnimationExtension.swift in Sources */,
+				4A9B03471D3CA8DC00FA3D0F /* PeripheralConnectedViewController.swift in Sources */,
 				4A9B03411D3C746F00FA3D0F /* ScanButton.swift in Sources */,
 				4AA1DB6E1C5142BB0053CD71 /* AppDelegate.swift in Sources */,
 			);
