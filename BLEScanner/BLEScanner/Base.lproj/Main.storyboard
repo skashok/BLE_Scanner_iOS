@@ -47,12 +47,34 @@
                                                             <color key="textColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
+                                                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wno-kC-5zi">
+                                                            <rect key="frame" x="303" y="0.0" width="64" height="74"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="30" id="v6Z-C3-mhR"/>
+                                                                <constraint firstAttribute="width" constant="64" id="z2E-tC-SOi"/>
+                                                            </constraints>
+                                                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
+                                                            <state key="normal" title="Connect">
+                                                                <color key="titleColor" red="0.0" green="0.82965912259999997" blue="0.55624335790000001" alpha="1" colorSpace="calibratedRGB"/>
+                                                            </state>
+                                                            <variation key="default">
+                                                                <mask key="constraints">
+                                                                    <exclude reference="v6Z-C3-mhR"/>
+                                                                </mask>
+                                                            </variation>
+                                                            <connections>
+                                                                <action selector="connectButtonPressed:" destination="s4q-7Y-tuW" eventType="touchUpInside" id="9gI-8p-1GF"/>
+                                                            </connections>
+                                                        </button>
                                                     </subviews>
                                                     <color key="backgroundColor" red="0.1215686275" green="0.12941176469999999" blue="0.14117647059999999" alpha="1" colorSpace="calibratedRGB"/>
                                                     <constraints>
                                                         <constraint firstItem="qC5-R3-XZd" firstAttribute="leading" secondItem="Y37-IU-5cw" secondAttribute="leading" constant="8" id="5Vj-bS-a7h"/>
                                                         <constraint firstItem="dxt-f2-oAL" firstAttribute="top" secondItem="Y37-IU-5cw" secondAttribute="top" constant="8" id="F5U-Vy-otZ"/>
+                                                        <constraint firstItem="Wno-kC-5zi" firstAttribute="top" secondItem="Y37-IU-5cw" secondAttribute="top" id="Ie6-JQ-udy"/>
+                                                        <constraint firstAttribute="trailing" secondItem="Wno-kC-5zi" secondAttribute="trailing" constant="8" id="YRD-Xb-zw2"/>
                                                         <constraint firstItem="qC5-R3-XZd" firstAttribute="top" secondItem="dxt-f2-oAL" secondAttribute="bottom" constant="8" id="lnc-56-Zoz"/>
+                                                        <constraint firstAttribute="bottom" secondItem="Wno-kC-5zi" secondAttribute="bottom" id="uSr-cP-wrB"/>
                                                         <constraint firstItem="dxt-f2-oAL" firstAttribute="leading" secondItem="Y37-IU-5cw" secondAttribute="leading" constant="8" id="xbH-0r-tGE"/>
                                                     </constraints>
                                                     <userDefinedRuntimeAttributes>
@@ -73,6 +95,7 @@
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                         <edgeInsets key="layoutMargins" top="8" left="0.0" bottom="8" right="8"/>
                                         <connections>
+                                            <outlet property="connectButton" destination="Wno-kC-5zi" id="ARt-aT-I9r"/>
                                             <outlet property="deviceNameLabel" destination="dxt-f2-oAL" id="YAS-CC-PbZ"/>
                                             <outlet property="deviceRssiLabel" destination="qC5-R3-XZd" id="WxQ-ZH-Dwe"/>
                                         </connections>

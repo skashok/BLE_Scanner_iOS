@@ -12,6 +12,7 @@ class DeviceTableViewCell: UITableViewCell {
 
 	@IBOutlet weak var deviceNameLabel: UILabel!
 	@IBOutlet weak var deviceRssiLabel: UILabel!
+	@IBOutlet weak var connectButton: UIButton!
 	
 	var displayPeripheral: DisplayPeripheral? {
 		didSet {
@@ -25,15 +26,11 @@ class DeviceTableViewCell: UITableViewCell {
 				deviceRssiLabel.text = "\(rssi)dB"
 			}
 			
-			if let services = displayPeripheral!.peripheral!.services {
-				for service in services {
-					if let characteristics = service.characteristics {
-						for characteristic in characteristics {
-							print(characteristic.descriptors)
-						}
-					}
-				}
-			}
+			connectButton.hidden = !(displayPeripheral?.isConnectable!)!
 		}
+	}
+	
+	@IBAction func connectButtonPressed(sender: AnyObject) {
+		
 	}
 }

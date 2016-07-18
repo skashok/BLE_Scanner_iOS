@@ -12,12 +12,8 @@ import UIKit
 struct DisplayPeripheral{
 	var peripheral: CBPeripheral?
 	var lastRSSI: NSNumber?
-	
-	init(peripheral: CBPeripheral, lastRSSI: NSNumber){
-		self.peripheral = peripheral
-		self.lastRSSI = lastRSSI
+	var isConnectable: Bool?
 	}
-}
 
 class PeripheralViewController: UIViewController {
 	
@@ -41,7 +37,7 @@ class PeripheralViewController: UIViewController {
 	override func viewWillAppear(animated: Bool) {
 		super.viewWillAppear(animated)
 		
-		viewReloadTimer = NSTimer.scheduledTimerWithTimeInterval(2.0, target: self, selector: #selector(PeripheralViewController.refreshScanView), userInfo: nil, repeats: true)
+		viewReloadTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(PeripheralViewController.refreshScanView), userInfo: nil, repeats: true)
 	}
 	
 	override func viewWillDisappear(animated: Bool) {
@@ -106,10 +102,10 @@ extension PeripheralViewController: CBCentralManagerDelegate{
 	
 	func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber){
 //		
-//		for (key, value) in advertisementData {
-//			print("\(peripheral.name): \(key) -> \(value)")
-//		}
-//		
+		for (key, value) in advertisementData {
+			print("\(peripheral.name): \(key) -> \(value)")
+		}
+//
 //		if peripheral.state != .Connected {
 //			peripheral.delegate = self
 //			//centralManager?.connectPeripheral(peripheral, options: nil)
@@ -122,7 +118,8 @@ extension PeripheralViewController: CBCentralManagerDelegate{
 			}
 		}
 		
-		let displayPeripheral = DisplayPeripheral(peripheral: peripheral, lastRSSI: RSSI)
+		let isConnectable = advertisementData["kCBAdvDataIsConnectable"] as! Bool
+		let displayPeripheral = DisplayPeripheral(peripheral: peripheral, lastRSSI: RSSI, isConnectable: isConnectable)
 		peripherals.append(displayPeripheral)
 		tableView.reloadData()
 	}
