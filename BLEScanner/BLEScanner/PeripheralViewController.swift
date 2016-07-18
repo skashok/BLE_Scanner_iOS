@@ -36,6 +36,8 @@ class PeripheralViewController: UIViewController {
 		
 		//Initialise CoreBluetooth Central Manager
         centralManager = CBCentralManager(delegate: self, queue: dispatch_get_main_queue())
+		
+		var viewReloadTimer = NSTimer.scheduledTimerWithTimeInterval(2.0, target: self, selector: Selector("refreshScanView"), userInfo: nil, repeats: true)
     }
 	
 	func updateViewForScanning(){
@@ -72,7 +74,7 @@ class PeripheralViewController: UIViewController {
 	
 	func startScanning(){
 		peripherals = []
-		self.centralManager?.scanForPeripheralsWithServices(nil, options: nil)
+		self.centralManager?.scanForPeripheralsWithServices(nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
 		updateViewForScanning()
 		let triggerTime = (Int64(NSEC_PER_SEC) * 10)
 		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, triggerTime), dispatch_get_main_queue(), { () -> Void in
@@ -81,6 +83,13 @@ class PeripheralViewController: UIViewController {
 				self.updateViewForStopScanning()
 			}
 		})
+	}
+	
+	func refreshScanView()
+	{
+		if peripherals.count > 1 && centralManager!.isScanning{
+			tableView.reloadData()
+		}
 	}
 }
 
@@ -94,23 +103,26 @@ extension PeripheralViewController: CBCentralManagerDelegate{
 	}
 	
 	func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber){
+//		
+//		for (key, value) in advertisementData {
+//			print("\(peripheral.name): \(key) -> \(value)")
+//		}
+//		
+//		if peripheral.state != .Connected {
+//			peripheral.delegate = self
+//			//centralManager?.connectPeripheral(peripheral, options: nil)
+//		}
 		
-		for (key, value) in advertisementData {
-			print("\(peripheral.name): \(key) -> \(value)")
-		}
-		
-		
-		if peripheral.state != .Connected {
-			//peripheral.delegate = self
-			//centralManager?.connectPeripheral(peripheral, options: nil)
+		for (index, foundPeripheral) in peripherals.enumerate(){
+			if foundPeripheral.peripheral?.identifier == peripheral.identifier{
+				peripherals[index].lastRSSI = RSSI
+				return
+			}
 		}
 		
 		let displayPeripheral = DisplayPeripheral(peripheral: peripheral, lastRSSI: RSSI)
 		peripherals.append(displayPeripheral)
-		
-		if peripherals.count > 0{
-			tableView.reloadData()
-		}
+		tableView.reloadData()
 	}
 }
 
