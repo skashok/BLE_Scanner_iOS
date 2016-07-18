@@ -13,7 +13,7 @@ struct DisplayPeripheral{
 	var peripheral: CBPeripheral?
 	var lastRSSI: NSNumber?
 	var isConnectable: Bool?
-	}
+}
 
 class PeripheralViewController: UIViewController {
 	
@@ -101,15 +101,6 @@ extension PeripheralViewController: CBCentralManagerDelegate{
 	}
 	
 	func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber){
-//		
-		for (key, value) in advertisementData {
-			print("\(peripheral.name): \(key) -> \(value)")
-		}
-//
-//		if peripheral.state != .Connected {
-//			peripheral.delegate = self
-//			//centralManager?.connectPeripheral(peripheral, options: nil)
-//		}
 		
 		for (index, foundPeripheral) in peripherals.enumerate(){
 			if foundPeripheral.peripheral?.identifier == peripheral.identifier{
@@ -160,7 +151,7 @@ extension PeripheralViewController: UITableViewDataSource {
 		
 		let cell = self.tableView.dequeueReusableCellWithIdentifier("cell")! as! DeviceTableViewCell
 		cell.displayPeripheral = peripherals[indexPath.row]
-		
+		cell.delegate = self
 		return cell
 	}
 	
@@ -169,4 +160,12 @@ extension PeripheralViewController: UITableViewDataSource {
 	}
 }
 
+extension PeripheralViewController: DeviceCellDelegate{
+	func connectPressed(peripheral: CBPeripheral) {
+		if peripheral.state != .Connected {
+			peripheral.delegate = self
+			centralManager?.connectPeripheral(peripheral, options: nil)
+		}
+	}
+}
 

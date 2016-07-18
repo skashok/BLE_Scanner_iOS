@@ -33,7 +33,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Y37-IU-5cw">
-                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="74"/>
+                                                    <rect key="frame" x="2" y="0.0" width="371" height="74"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Unknown Device" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dxt-f2-oAL">
                                                             <rect key="frame" x="8" y="8" width="231" height="26"/>
@@ -48,7 +48,7 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wno-kC-5zi">
-                                                            <rect key="frame" x="303" y="0.0" width="64" height="74"/>
+                                                            <rect key="frame" x="299" y="0.0" width="64" height="74"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="30" id="v6Z-C3-mhR"/>
                                                                 <constraint firstAttribute="width" constant="64" id="z2E-tC-SOi"/>
@@ -86,11 +86,19 @@
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                             <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="Y37-IU-5cw" secondAttribute="trailing" constant="2" id="1sA-Y3-KZo"/>
                                                 <constraint firstAttribute="bottom" secondItem="Y37-IU-5cw" secondAttribute="bottom" constant="6" id="3Hb-eI-UDr"/>
                                                 <constraint firstItem="Y37-IU-5cw" firstAttribute="top" secondItem="DsP-lT-lcN" secondAttribute="top" id="5NS-pv-wg5"/>
-                                                <constraint firstAttribute="trailing" secondItem="Y37-IU-5cw" secondAttribute="trailing" id="FkI-9X-DBe"/>
-                                                <constraint firstItem="Y37-IU-5cw" firstAttribute="leading" secondItem="DsP-lT-lcN" secondAttribute="leadingMargin" constant="-8" id="MMz-fS-v4H"/>
+                                                <constraint firstAttribute="trailing" secondItem="Y37-IU-5cw" secondAttribute="trailing" constant="2" id="FkI-9X-DBe"/>
+                                                <constraint firstItem="Y37-IU-5cw" firstAttribute="leading" secondItem="DsP-lT-lcN" secondAttribute="leadingMargin" constant="-6" id="MMz-fS-v4H"/>
+                                                <constraint firstItem="Y37-IU-5cw" firstAttribute="leading" secondItem="DsP-lT-lcN" secondAttribute="leading" constant="2" id="xNm-vR-eXd"/>
                                             </constraints>
+                                            <variation key="default">
+                                                <mask key="constraints">
+                                                    <exclude reference="FkI-9X-DBe"/>
+                                                    <exclude reference="MMz-fS-v4H"/>
+                                                </mask>
+                                            </variation>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                         <edgeInsets key="layoutMargins" top="8" left="0.0" bottom="8" right="8"/>

@@ -7,12 +7,19 @@
 //
 
 import UIKit
+import CoreBluetooth
+
+protocol DeviceCellDelegate: class {
+	func connectPressed(peripheral: CBPeripheral)
+}
 
 class DeviceTableViewCell: UITableViewCell {
 
 	@IBOutlet weak var deviceNameLabel: UILabel!
 	@IBOutlet weak var deviceRssiLabel: UILabel!
 	@IBOutlet weak var connectButton: UIButton!
+	
+	var delegate: DeviceCellDelegate?
 	
 	var displayPeripheral: DisplayPeripheral? {
 		didSet {
@@ -31,6 +38,6 @@ class DeviceTableViewCell: UITableViewCell {
 	}
 	
 	@IBAction func connectButtonPressed(sender: AnyObject) {
-		
+		delegate?.connectPressed((displayPeripheral?.peripheral)!)
 	}
 }
