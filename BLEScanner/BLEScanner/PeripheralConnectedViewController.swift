@@ -76,7 +76,7 @@ extension PeripheralConnectedViewController: CBPeripheralDelegate {
 		peripheral.services?.forEach({ (service) in
 			services.append(service)
 			tableView.reloadData()
-			//peripheral.discoverCharacteristics(nil, forService: service)
+			peripheral.discoverCharacteristics(nil, forService: service)
 		})
 	}
 	
@@ -85,7 +85,9 @@ extension PeripheralConnectedViewController: CBPeripheralDelegate {
 			print("Error discovering service characteristics: \(error?.localizedDescription)")
 		}
 		
-		//print(service.characteristics)
+		service.characteristics?.forEach({ (characteristic) in
+			print("\(characteristic.descriptors)---\(characteristic.properties)")
+		})
 	}
 	
 	func peripheral(peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: NSError?) {
