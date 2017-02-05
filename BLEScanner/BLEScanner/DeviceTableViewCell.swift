@@ -10,7 +10,7 @@ import UIKit
 import CoreBluetooth
 
 protocol DeviceCellDelegate: class {
-	func connectPressed(peripheral: CBPeripheral)
+	func connectPressed(_ peripheral: CBPeripheral)
 }
 
 class DeviceTableViewCell: UITableViewCell {
@@ -33,11 +33,11 @@ class DeviceTableViewCell: UITableViewCell {
 				deviceRssiLabel.text = "\(rssi)dB"
 			}
 			
-			connectButton.hidden = !(displayPeripheral?.isConnectable!)!
+			connectButton.isHidden = !(displayPeripheral?.isConnectable!)!
 		}
 	}
 	
-	@IBAction func connectButtonPressed(sender: AnyObject) {
+	@IBAction func connectButtonPressed(_ sender: AnyObject) {
 		delegate?.connectPressed((displayPeripheral?.peripheral)!)
 	}
 }
