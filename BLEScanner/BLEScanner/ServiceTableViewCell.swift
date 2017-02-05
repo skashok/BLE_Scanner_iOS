@@ -17,6 +17,6 @@ class ServiceTableViewCell: UITableViewCell {
         // Initialization code
 	}
 	
-	@IBAction func characteristicsButtonPressed(sender: AnyObject) {
+	@IBAction func characteristicsButtonPressed(_ sender: AnyObject) {
 	}
 }

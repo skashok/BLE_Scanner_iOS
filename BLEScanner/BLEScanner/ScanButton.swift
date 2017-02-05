@@ -14,16 +14,16 @@ class ScanButton: UIButton {
 		super.init(coder: aDecoder)
 		
 		layer.borderWidth = 1.5
-		layer.borderColor = UIColor.bluetoothBlueColor().CGColor
+		layer.borderColor = UIColor.bluetoothBlueColor().cgColor
 	}
 	
-	func buttonColorScheme(isScanning: Bool){
+	func buttonColorScheme(_ isScanning: Bool){
 		let title = isScanning ? "Stop Scanning" : "Start Scanning"
-		setTitle(title, forState: .Normal)
+		setTitle(title, for: UIControlState())
 		
-		let titleColor = isScanning ? UIColor.bluetoothBlueColor() : UIColor.whiteColor()
-		setTitleColor(titleColor, forState: .Normal)
+		let titleColor = isScanning ? UIColor.bluetoothBlueColor() : UIColor.white
+		setTitleColor(titleColor, for: UIControlState())
 
-		backgroundColor = isScanning ? UIColor.clearColor() : UIColor.bluetoothBlueColor()
+		backgroundColor = isScanning ? UIColor.clear : UIColor.bluetoothBlueColor()
 	}
 }

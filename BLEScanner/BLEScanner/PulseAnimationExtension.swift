@@ -17,7 +17,7 @@ extension UIView{
 		scaleAnimation.autoreverses = true
 		scaleAnimation.fromValue = 1.1;
 		scaleAnimation.toValue = 0.9;
-		layer.addAnimation(scaleAnimation, forKey: "scale")
+		layer.add(scaleAnimation, forKey: "scale")
 		
 		let opacityAnimation = CABasicAnimation(keyPath: "opacity")
 		opacityAnimation.duration = 0.5
@@ -25,6 +25,6 @@ extension UIView{
 		opacityAnimation.autoreverses = true
 		opacityAnimation.fromValue = 1.0
 		opacityAnimation.toValue = 0.2
-		layer.addAnimation(opacityAnimation, forKey: "opacity")
+		layer.add(opacityAnimation, forKey: "opacity")
 	}
 }
