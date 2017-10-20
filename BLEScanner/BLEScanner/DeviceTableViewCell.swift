@@ -9,12 +9,15 @@
 import UIKit
 import CoreBluetooth
 
+private struct Constants {
+    static let noDeviceName = "No Device Name"
+}
+
 protocol DeviceCellDelegate: class {
 	func connectPressed(_ peripheral: CBPeripheral)
 }
 
 class DeviceTableViewCell: UITableViewCell {
-
 	@IBOutlet weak var deviceNameLabel: UILabel!
 	@IBOutlet weak var deviceRssiLabel: UILabel!
 	@IBOutlet weak var connectButton: UIButton!
@@ -23,17 +26,18 @@ class DeviceTableViewCell: UITableViewCell {
 	
 	var displayPeripheral: DisplayPeripheral? {
 		didSet {
-			if let deviceName = displayPeripheral!.peripheral?.name{
-				deviceNameLabel.text = deviceName.isEmpty ? "No Device Name" : deviceName
+			if let deviceName = displayPeripheral?.peripheral?.name, !deviceName.isEmpty {
+				deviceNameLabel.text = deviceName
 			}else{
-				deviceNameLabel.text = "No Device Name"
+				deviceNameLabel.text = Constants.noDeviceName
 			}
 			
 			if let rssi = displayPeripheral!.lastRSSI {
 				deviceRssiLabel.text = "\(rssi)dB"
 			}
 			
-			connectButton.isHidden = !(displayPeripheral?.isConnectable!)!
+            let deviceIsConnectable = displayPeripheral?.isConnectable ?? false
+			connectButton.isHidden = !deviceIsConnectable
 		}
 	}
 	

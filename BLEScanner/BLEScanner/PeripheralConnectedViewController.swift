@@ -10,19 +10,21 @@ import UIKit
 import CoreBluetooth
 
 class PeripheralConnectedViewController: UIViewController {
-
-	@IBOutlet weak var tableView: UITableView!
-	@IBOutlet weak var peripheralName: UILabel!
-	@IBOutlet weak var blurView: UIVisualEffectView!
-	@IBOutlet weak var rssiLabel: UILabel!
+	@IBOutlet private weak var tableView: UITableView!
+	@IBOutlet private weak var peripheralName: UILabel!
+	@IBOutlet private weak var blurView: UIVisualEffectView!
+	@IBOutlet private weak var rssiLabel: UILabel!
+    @IBOutlet private weak var scanningButton: UIButton!
 	
-	var peripheral: CBPeripheral?
-	var rssiReloadTimer: Timer?
-	var services: [CBService] = []
+    var peripheral: CBPeripheral?
+	private var rssiReloadTimer: Timer?
+	private var services: [CBService] = []
 	
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        scanningButton.style(with: .btRed)
+        
 		peripheral?.delegate = self
 		peripheralName.text = peripheral?.name
 		
@@ -35,12 +37,12 @@ class PeripheralConnectedViewController: UIViewController {
 		
 		rssiReloadTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(PeripheralConnectedViewController.refreshRSSI), userInfo: nil, repeats: true)
 	}
-	
-	func refreshRSSI(){
+
+	@objc private func refreshRSSI(){
 		peripheral?.readRSSI()
 	}
 
-	@IBAction func disconnectButtonPressed(_ sender: AnyObject) {
+	@IBAction private func disconnectButtonPressed(_ sender: AnyObject) {
 		UIView.animate(withDuration: 0.5, animations: {
 			self.view.alpha = 0.0
 			}, completion: {_ in
@@ -65,12 +67,14 @@ extension PeripheralConnectedViewController: UITableViewDataSource{
 
 extension PeripheralConnectedViewController: CBPeripheralDelegate {
 	func centralManager(_ central: CBCentralManager, didFailToConnectPeripheral peripheral: CBPeripheral, error: NSError?) {
-		print("Error connecting peripheral: \(error?.localizedDescription)")
+        if let error = error {
+            print("Error connecting peripheral: \(error.localizedDescription)")
+        }
 	}
 
 	func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
-		if error != nil {
-			print("Error discovering services: \(error?.localizedDescription)")
+		if let error = error {
+			print("Error discovering services: \(error.localizedDescription)")
 		}
 		
 		peripheral.services?.forEach({ (service) in
@@ -81,26 +85,29 @@ extension PeripheralConnectedViewController: CBPeripheralDelegate {
 	}
 	
 	func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
-		if error != nil {
-			print("Error discovering service characteristics: \(error?.localizedDescription)")
+		if let error = error {
+			print("Error discovering service characteristics: \(error.localizedDescription)")
 		}
 		
-		service.characteristics?.forEach({ (characteristic) in
-			print("\(characteristic.descriptors)---\(characteristic.properties)")
+		service.characteristics?.forEach({ characteristic in
+            if let descriptors = characteristic.descriptors {
+                print(descriptors)
+            }
+            
+			print(characteristic.properties)
 		})
 	}
 	
 	func peripheral(_ peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: Error?) {
-		
 		switch RSSI.intValue {
 		case -90 ... -60:
-			rssiLabel.textColor = UIColor.bluetoothOrangeColor()
+			rssiLabel.textColor = .btOrange
 			break
 		case -200 ... -90:
-			rssiLabel.textColor = UIColor.bluetoothRedColor()
+			rssiLabel.textColor = .btRed
 			break
 		default:
-			rssiLabel.textColor = UIColor.bluetoothGreenColor()
+			rssiLabel.textColor = .btGreen
 		}
 		
 		rssiLabel.text = "\(RSSI)dB"

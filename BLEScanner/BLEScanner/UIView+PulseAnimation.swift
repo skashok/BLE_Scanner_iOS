@@ -1,5 +1,5 @@
 //
-//  PulseAnimationExtension.swift
+//  UIView+PulseAnimation.swift
 //  BLEScanner
 //
 //  Created by Harry Goodwin on 12/07/2016.

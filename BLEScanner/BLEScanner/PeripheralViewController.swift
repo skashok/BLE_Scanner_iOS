@@ -16,54 +16,54 @@ struct DisplayPeripheral{
 }
 
 class PeripheralViewController: UIViewController {
+	@IBOutlet private weak var statusLabel: UILabel!
+	@IBOutlet private weak var bluetoothIcon: UIImageView!
+	@IBOutlet private weak var scanningButton: UIButton!
+	@IBOutlet private weak var tableView: UITableView!
+    
+    private var centralManager: CBCentralManager?
+    private var peripherals: [DisplayPeripheral] = []
+	private var viewReloadTimer: Timer?
 	
-	@IBOutlet weak var statusLabel: UILabel!
-	@IBOutlet weak var bluetoothIcon: UIImageView!
-	@IBOutlet weak var scanningButton: ScanButton!
-	
-    var centralManager: CBCentralManager?
-    var peripherals: [DisplayPeripheral] = []
-	var viewReloadTimer: Timer?
-	
-	var selectedPeripheral: CBPeripheral?
-	
-	@IBOutlet weak var tableView: UITableView!
+	private var selectedPeripheral: CBPeripheral?
 	
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
-		
-		//Initialise CoreBluetooth Central Manager
 		centralManager = CBCentralManager(delegate: self, queue: DispatchQueue.main)
 	}
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        statusLabel.text = ""
+        scanningButton.style(with: .btBlue)
+    }
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		
-		viewReloadTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(PeripheralViewController.refreshScanView), userInfo: nil, repeats: true)
+		viewReloadTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(refreshScanView), userInfo: nil, repeats: true)
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
-		
 		viewReloadTimer?.invalidate()
 	}
 	
-	func updateViewForScanning(){
+	private func updateViewForScanning(){
 		statusLabel.text = "Scanning BLE Devices..."
 		bluetoothIcon.pulseAnimation()
 		bluetoothIcon.isHidden = false
-		scanningButton.buttonColorScheme(true)
+        scanningButton.update(isScanning: true)
 	}
 	
-	func updateViewForStopScanning(){
+	private func updateViewForStopScanning(){
 		let plural = peripherals.count > 1 ? "s" : ""
 		statusLabel.text = "\(peripherals.count) Device\(plural) Found"
 		bluetoothIcon.layer.removeAllAnimations()
 		bluetoothIcon.isHidden = true
-		scanningButton.buttonColorScheme(false)
+        scanningButton.update(isScanning: false)
 	}
 	
-	@IBAction func scanningButtonPressed(_ sender: AnyObject){
+	@IBAction private func scanningButtonPressed(_ sender: AnyObject){
 		if centralManager!.isScanning{
 			centralManager?.stopScan()
 			updateViewForStopScanning()
@@ -72,10 +72,10 @@ class PeripheralViewController: UIViewController {
 		}
 	}
 	
-	func startScanning(){
+	private func startScanning(){
+        updateViewForScanning()
 		peripherals = []
 		self.centralManager?.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
-		updateViewForScanning()
 		let triggerTime = (Int64(NSEC_PER_SEC) * 10)
 		DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(triggerTime) / Double(NSEC_PER_SEC), execute: { () -> Void in
 			if self.centralManager!.isScanning{
@@ -85,8 +85,7 @@ class PeripheralViewController: UIViewController {
 		})
 	}
 	
-	func refreshScanView()
-	{
+    @objc private func refreshScanView() {
 		if peripherals.count > 1 && centralManager!.isScanning{
 			tableView.reloadData()
 		}
@@ -104,7 +103,10 @@ extension PeripheralViewController: CBCentralManagerDelegate{
 		if (central.state == .poweredOn){
 			startScanning()
 		}else{
-			// do something like alert the user that ble is not on
+			let alert = UIAlertController(title: "Bluetooth Unavailable", message: "Please turn bluetooth on", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .default)
+            alert.addAction(okAction)
+            present(alert, animated: true)
 		}
 	}
 	
@@ -126,7 +128,9 @@ extension PeripheralViewController: CBCentralManagerDelegate{
 
 extension PeripheralViewController: CBPeripheralDelegate {
 	func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
-		print("Error connecting peripheral: \(error?.localizedDescription)")
+        if let error = error {
+            print("Error connecting peripheral: \(error.localizedDescription)")
+        }
 	}
 	
 	func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
