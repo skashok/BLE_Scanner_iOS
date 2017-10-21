@@ -9,20 +9,24 @@
 import CoreBluetooth
 import UIKit
 
-struct DisplayPeripheral{
-	var peripheral: CBPeripheral?
-	var lastRSSI: NSNumber?
-	var isConnectable: Bool?
+struct DisplayPeripheral: Hashable {
+	let peripheral: CBPeripheral
+	let lastRSSI: NSNumber
+	let isConnectable: Bool
+    
+    var hashValue: Int { return peripheral.hashValue }
+    
+    static func ==(lhs: DisplayPeripheral, rhs: DisplayPeripheral) -> Bool {
+        return lhs.peripheral == rhs.peripheral
+    }
 }
 
 class PeripheralViewController: UIViewController {
-	@IBOutlet private weak var statusLabel: UILabel!
-	@IBOutlet private weak var bluetoothIcon: UIImageView!
 	@IBOutlet private weak var scanningButton: UIButton!
 	@IBOutlet private weak var tableView: UITableView!
     
-    private var centralManager: CBCentralManager?
-    private var peripherals: [DisplayPeripheral] = []
+    private var centralManager: CBCentralManager!
+    private var peripherals = Set<DisplayPeripheral>()
 	private var viewReloadTimer: Timer?
 	
 	private var selectedPeripheral: CBPeripheral?
@@ -36,12 +40,15 @@ class PeripheralViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        statusLabel.text = ""
+        updateStatusText("")
         scanningButton.style(with: .btBlue)
+        setupNavBar()
+        tableView.contentInset = UIEdgeInsets(top: 6, left: 0, bottom: 0, right: 0)
     }
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
+        selectedPeripheral = nil
 		viewReloadTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(refreshScanView), userInfo: nil, repeats: true)
 	}
 	
@@ -49,19 +56,23 @@ class PeripheralViewController: UIViewController {
 		super.viewWillDisappear(animated)
 		viewReloadTimer?.invalidate()
 	}
+    
+    private func setupNavBar() {
+        navigationController?.navigationBar.barTintColor = .btBlue
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
+        let backButton = UIBarButtonItem(title: "Disconnect", style: UIBarButtonItemStyle.plain, target: nil, action: nil)
+        backButton.tintColor = .white
+        navigationItem.backBarButtonItem = backButton
+    }
 	
 	private func updateViewForScanning(){
-		statusLabel.text = "Scanning BLE Devices..."
-		bluetoothIcon.pulseAnimation()
-		bluetoothIcon.isHidden = false
+		updateStatusText("Scanning BLE Devices...")
         scanningButton.update(isScanning: true)
 	}
 	
 	private func updateViewForStopScanning(){
 		let plural = peripherals.count > 1 ? "s" : ""
-		statusLabel.text = "\(peripherals.count) Device\(plural) Found"
-		bluetoothIcon.layer.removeAllAnimations()
-		bluetoothIcon.isHidden = true
+		updateStatusText("\(peripherals.count) Device\(plural) Found")
         scanningButton.update(isScanning: false)
 	}
 
@@ -78,13 +89,13 @@ class PeripheralViewController: UIViewController {
         updateViewForScanning()
 		peripherals = []
 		self.centralManager?.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
-		let triggerTime = (Int64(NSEC_PER_SEC) * 10)
-		DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(triggerTime) / Double(NSEC_PER_SEC), execute: { () -> Void in
-			if self.centralManager!.isScanning{
-				self.centralManager?.stopScan()
-				self.updateViewForStopScanning()
-			}
-		})
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) { [weak self] in
+            guard let strongSelf = self else { return }
+            if strongSelf.centralManager!.isScanning {
+                strongSelf.centralManager?.stopScan()
+                strongSelf.updateViewForStopScanning()
+            }
+        }
 	}
 	
     @objc private func refreshScanView() {
@@ -95,14 +106,19 @@ class PeripheralViewController: UIViewController {
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if let destinationViewController = segue.destination as? PeripheralConnectedViewController{
-			destinationViewController.peripheral = selectedPeripheral
-        } else if segue.identifier == "LoadingSegue" {
-            loadingVC = segue.destination
+			destinationViewController.setup(with: centralManager, peripheral: selectedPeripheral!)
+        } else if let loadingViewController = segue.destination as? ConnectingViewController {
+            loadingVC = loadingViewController
+            loadingViewController.delegate = self
         }
 	}
     
     private func showLoading() {
         performSegue(withIdentifier: "LoadingSegue", sender: self)
+    }
+    
+    private func updateStatusText(_ text: String) {
+        title = text
     }
 }
 
@@ -111,35 +127,33 @@ extension PeripheralViewController: CBCentralManagerDelegate{
 		if (central.state == .poweredOn){
 			startScanning()
 		}else{
-			let alert = UIAlertController(title: "Bluetooth Unavailable", message: "Please turn bluetooth on", preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "OK", style: .default)
-            alert.addAction(okAction)
-            present(alert, animated: true)
+            UIAlertController.presentAlert(on: self, title: "Bluetooth Unavailable", message: "Please turn bluetooth on")
 		}
 	}
 	
 	func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber){
-		
-		for (index, foundPeripheral) in peripherals.enumerated(){
-			if foundPeripheral.peripheral?.identifier == peripheral.identifier{
-				peripherals[index].lastRSSI = RSSI
-				return
-			}
-		}
-		
 		let isConnectable = advertisementData["kCBAdvDataIsConnectable"] as! Bool
 		let displayPeripheral = DisplayPeripheral(peripheral: peripheral, lastRSSI: RSSI, isConnectable: isConnectable)
-		peripherals.append(displayPeripheral)
+		peripherals.insert(displayPeripheral)
 		tableView.reloadData()
 	}
 }
 
 extension PeripheralViewController: CBPeripheralDelegate {
 	func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
-        loadingVC?.dismiss(animated: true)
-        if let error = error {
-            print("Error connecting peripheral: \(error.localizedDescription)")
-        }
+        loadingVC?.dismiss(animated: true, completion: {
+            var errorMessage = "Could not connect"
+            if let selectedPeripheralName = self.selectedPeripheral?.name {
+                errorMessage += " \(selectedPeripheralName)"
+            }
+            
+            if let error = error {
+                print("Error connecting peripheral: \(error.localizedDescription)")
+                errorMessage += "\n \(error.localizedDescription)"
+            }
+        
+            UIAlertController.presentAlert(on: self, title: "Error", message: errorMessage)
+        })
 	}
 	
 	func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
@@ -153,9 +167,13 @@ extension PeripheralViewController: CBPeripheralDelegate {
 
 extension PeripheralViewController: UITableViewDataSource {
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell{
+		let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell") as! DeviceTableViewCell
+        
+        let peripheralsArray = Array(peripherals)
+        if peripheralsArray.count > indexPath.row {
+            cell.populate(displayPeripheral: peripheralsArray[indexPath.row])
+        }
 		
-		let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell")! as! DeviceTableViewCell
-		cell.displayPeripheral = peripherals[indexPath.row]
 		cell.delegate = self
 		return cell
 	}
@@ -165,14 +183,24 @@ extension PeripheralViewController: UITableViewDataSource {
 	}
 }
 
-extension PeripheralViewController: DeviceCellDelegate{
-	func connectPressed(_ peripheral: CBPeripheral) {
-		if peripheral.state != .connected {
-			selectedPeripheral = peripheral
-			peripheral.delegate = self
-			centralManager?.connect(peripheral, options: nil)
+extension PeripheralViewController: DeviceCellDelegate {
+    func didTapConnect(_ cell: DeviceTableViewCell, peripheral: CBPeripheral) {
+        if peripheral.state != .connected {
+            selectedPeripheral = peripheral
+            peripheral.delegate = self
+            centralManager.connect(peripheral, options: nil)
             showLoading()
-		}
-	}
+        }
+    }
+}
+
+extension PeripheralViewController: ConnectingViewControllerDelegate {
+    func didTapCancel(_ vc: ConnectingViewController) {
+        if let selectedPeripheral = selectedPeripheral {
+            centralManager.cancelPeripheralConnection(selectedPeripheral)
+        }
+        
+        loadingVC?.dismiss(animated: true)
+    }
 }
 

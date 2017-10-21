@@ -11,43 +11,43 @@ import CoreBluetooth
 
 class PeripheralConnectedViewController: UIViewController {
 	@IBOutlet private weak var tableView: UITableView!
-	@IBOutlet private weak var peripheralName: UILabel!
-	@IBOutlet private weak var blurView: UIVisualEffectView!
 	@IBOutlet private weak var rssiLabel: UILabel!
-    @IBOutlet private weak var scanningButton: UIButton!
 	
-    var peripheral: CBPeripheral?
+    var peripheral: CBPeripheral!
+    var centralManager: CBCentralManager!
+    
 	private var rssiReloadTimer: Timer?
 	private var services: [CBService] = []
 	
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        scanningButton.style(with: .btRed)
         
-		peripheral?.delegate = self
-		peripheralName.text = peripheral?.name
-		
-		let blurEffect = UIBlurEffect(style: .dark)
-		blurView.effect = blurEffect
-		
+		peripheral.delegate = self
+		title = peripheral.name
 		tableView.rowHeight = UITableViewAutomaticDimension
 		tableView.estimatedRowHeight = 80.0
 		tableView.contentInset.top = 5
 		
 		rssiReloadTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(PeripheralConnectedViewController.refreshRSSI), userInfo: nil, repeats: true)
 	}
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        rssiReloadTimer?.invalidate()
+        centralManager.cancelPeripheralConnection(peripheral)
+    }
+    
+    func setup(with centralManager: CBCentralManager, peripheral: CBPeripheral) {
+        self.centralManager = centralManager
+        self.peripheral = peripheral
+    }
 
 	@objc private func refreshRSSI(){
-		peripheral?.readRSSI()
+		peripheral.readRSSI()
 	}
 
-	@IBAction private func disconnectButtonPressed(_ sender: AnyObject) {
-		UIView.animate(withDuration: 0.5, animations: {
-			self.view.alpha = 0.0
-			}, completion: {_ in
-				self.dismiss(animated: false, completion: nil)
-		}) 
+	@objc private func disconnectButtonPressed(_ sender: AnyObject) {
+		navigationController?.popToRootViewController(animated: true)
 	}
 }
 
