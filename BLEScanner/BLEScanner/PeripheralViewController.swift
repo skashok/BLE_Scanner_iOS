@@ -26,6 +26,8 @@ class PeripheralViewController: UIViewController {
 	private var viewReloadTimer: Timer?
 	
 	private var selectedPeripheral: CBPeripheral?
+    
+    var loadingVC: UIViewController?
 	
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
@@ -62,7 +64,7 @@ class PeripheralViewController: UIViewController {
 		bluetoothIcon.isHidden = true
         scanningButton.update(isScanning: false)
 	}
-	
+
 	@IBAction private func scanningButtonPressed(_ sender: AnyObject){
 		if centralManager!.isScanning{
 			centralManager?.stopScan()
@@ -94,8 +96,14 @@ class PeripheralViewController: UIViewController {
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if let destinationViewController = segue.destination as? PeripheralConnectedViewController{
 			destinationViewController.peripheral = selectedPeripheral
-		}
+        } else if segue.identifier == "LoadingSegue" {
+            loadingVC = segue.destination
+        }
 	}
+    
+    private func showLoading() {
+        performSegue(withIdentifier: "LoadingSegue", sender: self)
+    }
 }
 
 extension PeripheralViewController: CBCentralManagerDelegate{
@@ -128,15 +136,18 @@ extension PeripheralViewController: CBCentralManagerDelegate{
 
 extension PeripheralViewController: CBPeripheralDelegate {
 	func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
+        loadingVC?.dismiss(animated: true)
         if let error = error {
             print("Error connecting peripheral: \(error.localizedDescription)")
         }
 	}
 	
 	func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-		print("Peripheral connected")
-		performSegue(withIdentifier: "PeripheralConnectedSegue", sender: self)
-		peripheral.discoverServices(nil)
+        loadingVC?.dismiss(animated: true, completion: {
+            print("Peripheral connected")
+            self.performSegue(withIdentifier: "PeripheralConnectedSegue", sender: self)
+            peripheral.discoverServices(nil)
+        })
 	}
 }
 
@@ -160,6 +171,7 @@ extension PeripheralViewController: DeviceCellDelegate{
 			selectedPeripheral = peripheral
 			peripheral.delegate = self
 			centralManager?.connect(peripheral, options: nil)
+            showLoading()
 		}
 	}
 }

@@ -180,12 +180,48 @@
                         <outlet property="scanningButton" destination="NhB-ST-6ch" id="olz-lR-j9a"/>
                         <outlet property="statusLabel" destination="dm0-Qu-TXI" id="OWF-5Y-Ugh"/>
                         <outlet property="tableView" destination="RnN-sb-ufw" id="wd7-Ou-RfD"/>
-                        <segue destination="5vs-gu-GRw" kind="presentation" identifier="PeripheralConnectedSegue" modalPresentationStyle="overCurrentContext" id="Eao-OB-vj0"/>
+                        <segue destination="5vs-gu-GRw" kind="show" identifier="PeripheralConnectedSegue" id="Eao-OB-vj0"/>
+                        <segue destination="akz-wJ-oP3" kind="presentation" identifier="LoadingSegue" id="7tu-Td-nSQ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JUx-J1-JIE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-314" y="-137"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="bxf-6t-kI2">
+            <objects>
+                <viewController modalTransitionStyle="crossDissolve" modalPresentationStyle="overFullScreen" id="akz-wJ-oP3" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="nwq-Zi-fCa"/>
+                        <viewControllerLayoutGuide type="bottom" id="bEr-bb-o1F"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="y0b-hW-E2b">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="GJ9-FE-VXW">
+                                <rect key="frame" x="169" y="315" width="37" height="37"/>
+                            </activityIndicatorView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connecting..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uko-fJ-eNQ">
+                                <rect key="frame" x="123" y="249" width="129.5" height="26"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="21"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.1215686275" green="0.12941176469999999" blue="0.14117647059999999" alpha="0.7362211044520548" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="GJ9-FE-VXW" firstAttribute="centerX" secondItem="y0b-hW-E2b" secondAttribute="centerX" id="NSV-ZR-g5m"/>
+                            <constraint firstItem="GJ9-FE-VXW" firstAttribute="top" secondItem="uko-fJ-eNQ" secondAttribute="bottom" constant="40" id="R3q-j4-18C"/>
+                            <constraint firstItem="uko-fJ-eNQ" firstAttribute="centerX" secondItem="y0b-hW-E2b" secondAttribute="centerX" id="gKW-ta-UIB"/>
+                            <constraint firstItem="GJ9-FE-VXW" firstAttribute="centerY" secondItem="y0b-hW-E2b" secondAttribute="centerY" id="plf-v1-lhG"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mfQ-WU-llC" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-314.39999999999998" y="565.36731634182911"/>
         </scene>
         <!--Peripheral Connected View Controller-->
         <scene sceneID="WD2-wL-J2c">
