@@ -14,34 +14,30 @@ private struct Constants {
 }
 
 protocol DeviceCellDelegate: class {
-	func connectPressed(_ peripheral: CBPeripheral)
+    func didTapConnect(_ cell: DeviceTableViewCell, peripheral: CBPeripheral)
 }
 
 class DeviceTableViewCell: UITableViewCell {
-	@IBOutlet weak var deviceNameLabel: UILabel!
-	@IBOutlet weak var deviceRssiLabel: UILabel!
-	@IBOutlet weak var connectButton: UIButton!
+	@IBOutlet weak private var deviceNameLabel: UILabel!
+	@IBOutlet weak private var deviceRssiLabel: UILabel!
+	@IBOutlet weak private var connectButton: UIButton!
 	
-	var delegate: DeviceCellDelegate?
+	weak var delegate: DeviceCellDelegate?
+	private var displayPeripheral: DisplayPeripheral!
+    
+    func populate(displayPeripheral: DisplayPeripheral) {
+        self.displayPeripheral = displayPeripheral
+        if let deviceName = displayPeripheral.peripheral.name, !deviceName.isEmpty {
+            deviceNameLabel.text = deviceName
+        }else{
+            deviceNameLabel.text = Constants.noDeviceName
+        }
+        
+        deviceRssiLabel.text = "\(displayPeripheral.lastRSSI)dB"
+        connectButton.isHidden = !displayPeripheral.isConnectable
+    }
 	
-	var displayPeripheral: DisplayPeripheral? {
-		didSet {
-			if let deviceName = displayPeripheral?.peripheral?.name, !deviceName.isEmpty {
-				deviceNameLabel.text = deviceName
-			}else{
-				deviceNameLabel.text = Constants.noDeviceName
-			}
-			
-			if let rssi = displayPeripheral!.lastRSSI {
-				deviceRssiLabel.text = "\(rssi)dB"
-			}
-			
-            let deviceIsConnectable = displayPeripheral?.isConnectable ?? false
-			connectButton.isHidden = !deviceIsConnectable
-		}
-	}
-	
-	@IBAction func connectButtonPressed(_ sender: AnyObject) {
-		delegate?.connectPressed((displayPeripheral?.peripheral)!)
+	@IBAction private func connectButtonPressed(_ sender: AnyObject) {
+		delegate?.didTapConnect(self, peripheral: displayPeripheral.peripheral)
 	}
 }
