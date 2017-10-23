@@ -31,7 +31,7 @@ class PeripheralViewController: UIViewController {
 	
 	private var selectedPeripheral: CBPeripheral?
     
-    var loadingVC: UIViewController?
+    var connectingViewController: UIViewController?
 	
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
@@ -107,9 +107,13 @@ class PeripheralViewController: UIViewController {
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if let destinationViewController = segue.destination as? PeripheralConnectedViewController{
 			destinationViewController.setup(with: centralManager, peripheral: selectedPeripheral!)
-        } else if let loadingViewController = segue.destination as? ConnectingViewController {
-            loadingVC = loadingViewController
-            loadingViewController.delegate = self
+        } else if let connectingVC = segue.destination as? ConnectingViewController {
+            connectingVC.delegate = self
+            if let selectedPeripheral = selectedPeripheral {
+                connectingVC.peripheralName = selectedPeripheral.displayName
+            }
+
+            connectingViewController = connectingVC
         }
 	}
     
@@ -141,7 +145,7 @@ extension PeripheralViewController: CBCentralManagerDelegate{
 
 extension PeripheralViewController: CBPeripheralDelegate {
 	func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
-        loadingVC?.dismiss(animated: true, completion: {
+        connectingViewController?.dismiss(animated: true, completion: {
             var errorMessage = "Could not connect"
             if let selectedPeripheralName = self.selectedPeripheral?.name {
                 errorMessage += " \(selectedPeripheralName)"
@@ -157,7 +161,7 @@ extension PeripheralViewController: CBPeripheralDelegate {
 	}
 	
 	func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        loadingVC?.dismiss(animated: true, completion: {
+        connectingViewController?.dismiss(animated: true, completion: {
             print("Peripheral connected")
             self.performSegue(withIdentifier: "PeripheralConnectedSegue", sender: self)
             peripheral.discoverServices(nil)
@@ -200,7 +204,7 @@ extension PeripheralViewController: ConnectingViewControllerDelegate {
             centralManager.cancelPeripheralConnection(selectedPeripheral)
         }
         
-        loadingVC?.dismiss(animated: true)
+        connectingViewController?.dismiss(animated: true)
     }
 }
 

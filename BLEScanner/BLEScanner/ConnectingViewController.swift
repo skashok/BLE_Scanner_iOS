@@ -13,18 +13,21 @@ protocol ConnectingViewControllerDelegate: class {
 }
 
 class ConnectingViewController: UIViewController {
-    @IBOutlet weak var loadingOverlayView: UIView!
-    @IBOutlet weak var cancelButton: UIButton!
+    @IBOutlet private weak var titleLabel: UILabel!
+    @IBOutlet private weak var loadingOverlayView: UIView!
+    @IBOutlet private weak var cancelButton: UIButton!
     
     weak var delegate: ConnectingViewControllerDelegate?
+    var peripheralName = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        titleLabel.text = "Connecting to \(peripheralName)..."
         loadingOverlayView.layer.cornerRadius = 3
         cancelButton.layer.cornerRadius = 3
     }
     
-    @IBAction func didTapCancelButton(_ sender: Any) {
+    @IBAction private func didTapCancelButton(_ sender: Any) {
         delegate?.didTapCancel(self)
     }
 }

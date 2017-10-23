@@ -20,6 +20,7 @@
 		4AA1DB821C51441F0053CD71 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AA1DB811C51441F0053CD71 /* CoreBluetooth.framework */; };
 		550B72BB1F9C99D500EFA951 /* ConnectingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550B72BA1F9C99D500EFA951 /* ConnectingViewController.swift */; };
 		550B72BD1F9CA23700EFA951 /* UIAlertController+Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550B72BC1F9CA23700EFA951 /* UIAlertController+Utility.swift */; };
+		551CA6FC1F9DFF61007BD5E6 /* CBPeripheral+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 551CA6FB1F9DFF61007BD5E6 /* CBPeripheral+Name.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		4AA1DB811C51441F0053CD71 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		550B72BA1F9C99D500EFA951 /* ConnectingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingViewController.swift; sourceTree = "<group>"; };
 		550B72BC1F9CA23700EFA951 /* UIAlertController+Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Utility.swift"; sourceTree = "<group>"; };
+		551CA6FB1F9DFF61007BD5E6 /* CBPeripheral+Name.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CBPeripheral+Name.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +87,7 @@
 				4A9B03481D3CF16A00FA3D0F /* ServiceTableViewCell.swift */,
 				550B72BA1F9C99D500EFA951 /* ConnectingViewController.swift */,
 				550B72BC1F9CA23700EFA951 /* UIAlertController+Utility.swift */,
+				551CA6FB1F9DFF61007BD5E6 /* CBPeripheral+Name.swift */,
 			);
 			path = BLEScanner;
 			sourceTree = "<group>";
@@ -162,6 +165,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4AA1DB801C5143690053CD71 /* PeripheralViewController.swift in Sources */,
+				551CA6FC1F9DFF61007BD5E6 /* CBPeripheral+Name.swift in Sources */,
 				4A9B03491D3CF16A00FA3D0F /* ServiceTableViewCell.swift in Sources */,
 				4A9B031F1D35B1D900FA3D0F /* UIColor+BTColors.swift in Sources */,
 				550B72BB1F9C99D500EFA951 /* ConnectingViewController.swift in Sources */,
@@ -297,7 +301,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+                DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = BLEScanner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.GG.BLEScanner;
@@ -311,7 +315,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+                DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = BLEScanner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.GG.BLEScanner;
