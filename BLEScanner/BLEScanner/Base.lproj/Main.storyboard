@@ -189,8 +189,8 @@
                                             <action selector="scanningButtonPressed:" destination="jNx-vC-77T" eventType="touchUpInside" id="8yq-0F-XId"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connecting..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HBy-B0-Wam">
-                                        <rect key="frame" x="77.5" y="14" width="127" height="25.5"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connecting..." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HBy-B0-Wam">
+                                        <rect key="frame" x="8" y="14" width="267" height="25.5"/>
                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="21"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -208,8 +208,10 @@
                                     <constraint firstItem="HBy-B0-Wam" firstAttribute="centerX" secondItem="JrH-Oa-Nyo" secondAttribute="centerX" id="WoO-mU-Rjx"/>
                                     <constraint firstItem="KqN-Ge-X8l" firstAttribute="top" secondItem="HBy-B0-Wam" secondAttribute="bottom" constant="26" id="Yi9-jp-dbO"/>
                                     <constraint firstAttribute="trailing" secondItem="l5c-FY-5y4" secondAttribute="trailing" constant="3" id="dds-hp-8w3"/>
+                                    <constraint firstAttribute="trailing" secondItem="HBy-B0-Wam" secondAttribute="trailing" constant="8" id="eQh-lM-lMk"/>
                                     <constraint firstItem="l5c-FY-5y4" firstAttribute="top" secondItem="KqN-Ge-X8l" secondAttribute="bottom" constant="26" id="qxe-FQ-JiT"/>
                                     <constraint firstItem="HBy-B0-Wam" firstAttribute="top" secondItem="JrH-Oa-Nyo" secondAttribute="top" constant="14" id="rec-q5-bs3"/>
+                                    <constraint firstItem="HBy-B0-Wam" firstAttribute="leading" secondItem="JrH-Oa-Nyo" secondAttribute="leading" constant="8" id="wor-JF-NxZ"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -224,6 +226,7 @@
                     <connections>
                         <outlet property="cancelButton" destination="l5c-FY-5y4" id="c18-Hp-CYo"/>
                         <outlet property="loadingOverlayView" destination="JrH-Oa-Nyo" id="8Pq-oi-KI9"/>
+                        <outlet property="titleLabel" destination="HBy-B0-Wam" id="EVU-c4-5Fb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mfQ-WU-llC" userLabel="First Responder" sceneMemberID="firstResponder"/>
