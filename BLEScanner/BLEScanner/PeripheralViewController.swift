@@ -41,9 +41,14 @@ class PeripheralViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         updateStatusText("")
+        scanningButton.setupDisabledState()
         scanningButton.style(with: .btBlue)
+        scanningButton.update(isScanning: false)
+        scanningButton.isEnabled = false
         setupNavBar()
-        tableView.contentInset = UIEdgeInsets(top: 6, left: 0, bottom: 0, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: 6, left: 0, bottom: 6, right: 0)
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 74
     }
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -85,7 +90,7 @@ class PeripheralViewController: UIViewController {
 		}
 	}
 	
-	private func startScanning(){
+	private func startScanning() {
         updateViewForScanning()
 		peripherals = []
 		self.centralManager?.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
@@ -129,8 +134,13 @@ class PeripheralViewController: UIViewController {
 extension PeripheralViewController: CBCentralManagerDelegate{
 	func centralManagerDidUpdateState(_ central: CBCentralManager){
 		if (central.state == .poweredOn){
+            scanningButton.isEnabled = true
 			startScanning()
 		}else{
+            updateStatusText("Bluetooth Disabled")
+            scanningButton.isEnabled = false
+            peripherals.removeAll()
+            tableView.reloadData()
             UIAlertController.presentAlert(on: self, title: "Bluetooth Unavailable", message: "Please turn bluetooth on")
 		}
 	}
@@ -171,7 +181,11 @@ extension PeripheralViewController: CBPeripheralDelegate {
 
 extension PeripheralViewController: UITableViewDataSource {
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell{
-		let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell") as! DeviceTableViewCell
+        if peripherals.count == 0 {
+            return tableView.dequeueReusableCell(withIdentifier: "emptyCell")!
+        }
+        
+		let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! DeviceTableViewCell
         
         let peripheralsArray = Array(peripherals)
         if peripheralsArray.count > indexPath.row {
@@ -182,9 +196,19 @@ extension PeripheralViewController: UITableViewDataSource {
 		return cell
 	}
 	
-	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int{
-		return peripherals.count
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if peripherals.count > 0 {
+            return peripherals.count
+        } else {
+            return 1
+        }
 	}
+}
+
+extension PeripheralViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return peripherals.count > 0 ? UITableViewAutomaticDimension : tableView.frame.size.height
+    }
 }
 
 extension PeripheralViewController: DeviceCellDelegate {

@@ -15,6 +15,10 @@ extension UIButton {
         layer.cornerRadius = 3
     }
     
+    func setupDisabledState() {
+        setTitleColor(.lightGray, for: .disabled)
+    }
+    
     func update(isScanning: Bool){
         let title = isScanning ? "Stop Scanning" : "Start Scanning"
         setTitle(title, for: UIControlState())
